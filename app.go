@@ -1,7 +1,5 @@
 package main
 
-import (
-)
 import "github.com/vvotm/apiHahajok/boot"
 
 func main() {

@@ -7,6 +7,9 @@
 
 package service
 
-func RecordOpenID(openId string) error {
+import "github.com/vvotm/apiHahajok/models"
 
+func RecordOpenID(openId, unionId string) (int64, error) {
+	usermodel := models.NewUser()
+	return usermodel.RecordOpenId(openId, unionId)
 }
