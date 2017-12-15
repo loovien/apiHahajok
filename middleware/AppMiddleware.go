@@ -12,7 +12,7 @@ import (
 	"github.com/labstack/echo/middleware"
 )
 
-func InitMiddleware(e echo.Echo)  {
+func InitMiddleware(e *echo.Echo)  {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 

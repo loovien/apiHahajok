@@ -1,16 +1,10 @@
 package main
 
 import (
-	"github.com/labstack/echo"
-	"github.com/vvotm/apiHahajok/routes"
-	"github.com/vvotm/apiHahajok/middleware"
 )
+import "github.com/vvotm/apiHahajok/boot"
 
 func main() {
-	app := echo.New()
-	middleware.InitMiddleware(app) // initialize middleware
-	routes.InitRoutes(app) // initialize route
-
-	err := app.Start(":8080")
-	app.Logger.Errorf("系统错误: %v", err)
+	app := boot.GetApp().AppInst
+	app.Logger.Errorf("系统错误: %v", app.Start(":1223"))
 }

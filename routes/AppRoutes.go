@@ -5,6 +5,6 @@ import (
 	"github.com/vvotm/apiHahajok/controllers"
 )
 
-func InitRoutes(e echo.Echo) {
+func InitRoutes(e *echo.Echo) {
 	e.POST("/user/openid.json", controllers.GetUserOpenID)
 }
