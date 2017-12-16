@@ -11,3 +11,10 @@ type ReqPage struct {
 	Page int `json:"page" form:"page" query:"page"`
 	Size int `json:"size" form:"size" query:"size"`
 }
+
+func NewReqPage() *ReqPage {
+	return &ReqPage{
+		Page: 1,
+		Size: 10,
+	}
+}

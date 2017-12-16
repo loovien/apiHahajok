@@ -11,12 +11,17 @@ import (
 	"github.com/labstack/echo"
 	"github.com/vvotm/apiHahajok/models/request"
 	"github.com/vvotm/apiHahajok/service"
+	"github.com/vvotm/apiHahajok/errhandle"
+	"net/http"
+	"github.com/vvotm/apiHahajok/utils"
 )
 
 func GetLatestsJokersList(ctx echo.Context) (err error) {
-	pageInfo := new(request.ReqPage)
+	pageInfo := request.NewReqPage()
 	if err = ctx.Bind(pageInfo); err != nil {
 		return err
 	}
-	service.GetLatestJokersList(pageInfo)
+	resp, err := service.GetLatestJokersList(pageInfo)
+	errhandle.CheckError(err)
+	return ctx.JSON(http.StatusOK, utils.GetCommonResp(resp, errhandle.SUCCESS_CODE, "success"))
 }

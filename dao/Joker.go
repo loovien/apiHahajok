@@ -45,12 +45,12 @@ func (j *Joker) Count(conditions string) (cnt int) {
 
 func (j *Joker) GetJokerList(columns, conditions string) (jokerList[]Joker, err error) {
 	dbConn := db.GetConn()
-	sql := fmt.Sprintf("select %s from joker where ?", columns)
-	log.Info(sql)
 	if conditions == "" {
 		conditions = "1 = 1"
 	}
-	rows, err := dbConn.Query(sql, conditions)
+	sql := fmt.Sprintf("select %s from joker where %s", columns, conditions)
+	log.Info(sql)
+	rows, err := dbConn.Query(sql)
 	defer rows.Close()
 	if err != nil {
 		log.Error(err)

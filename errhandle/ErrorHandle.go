@@ -11,6 +11,7 @@ import (
 	"github.com/labstack/echo"
 	"net/http"
 	"github.com/vvotm/apiHahajok/utils"
+	"github.com/labstack/gommon/log"
 )
 
 func ErrorHandle(err error, ctx echo.Context)  {
@@ -25,4 +26,11 @@ func ErrorHandle(err error, ctx echo.Context)  {
 	ctx.JSON(http.StatusOK, utils.GetCommonResp(struct{
 		ErrMsg string `json:"errmsg"`
 	}{webErr.ErrorMsg()}, webErr.GetCode(), webErr.Error()))
+}
+
+func CheckError(err error)  {
+	if err != nil {
+		log.Error(err)
+		panic(err)
+	}
 }
