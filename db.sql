@@ -11,6 +11,7 @@ create table if not exists user (
     province varchar(32) not null default "" comment "用户所在省份",
     city varchar(32) not null default "" comment "用户所在城市",
     lang varchar(16) not null default "" comment "en",
+    issave tinyint not null default "0" comment "是否存储过",
     createdAt int unsigned not null default 0 comment "用户平台创建时间",
     updatedAt int unsigned not null default 0 comment "用户平台更新时间",
 

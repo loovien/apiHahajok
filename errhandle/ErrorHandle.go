@@ -1,15 +1,14 @@
 /**
  * @website: https://vvotm.github.io
  * @author luowen<bigpao.luo@gmail.com>
- * @date 2017/12/16 1:13
+ * @date 2017/12/16 12:01
  * @description: 
  */
 
 package errhandle
 
-const (
-	SUCCESS_CODE  = 0
-	ERROR_CODE = iota
-	DB_OPERATE_ERROR = iota
-)
+import "github.com/labstack/echo"
 
+func ErrorHandle(err error, ctx echo.Context)  {
+	
+}

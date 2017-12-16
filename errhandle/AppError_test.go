@@ -10,6 +10,6 @@ package errhandle
 import "testing"
 
 func TestNewPDOError(t *testing.T) {
-	pdoErr := NewPDOError("数据库错误")
+	pdoErr := NewPDOError("数据库错误", ERROR_CODE)
 	t.Log(pdoErr.Error())
 }

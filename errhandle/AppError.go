@@ -8,8 +8,14 @@
 package errhandle
 
 type AbstractError struct {
+	Code int
 	Message string
 }
+
+func (p *AbstractError) GetCode() int  {
+	return p.Code
+}
+
 func (p *AbstractError) Error() string {
 	return p.Message
 }
@@ -17,8 +23,8 @@ func (p *AbstractError) Error() string {
 type PDOError struct {
 	AbstractError
 }
-func NewPDOError(message string) *PDOError {
+func NewPDOError(message string, code int) *PDOError {
 	return &PDOError{
-		AbstractError{message},
+		AbstractError{code, message},
 	}
 }

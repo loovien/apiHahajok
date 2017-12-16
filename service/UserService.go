@@ -8,17 +8,23 @@
 package service
 
 import (
-	"github.com/vvotm/apiHahajok/models"
 	"errors"
 	"github.com/labstack/gommon/log"
+	"github.com/vvotm/apiHahajok/dao"
+	"github.com/vvotm/apiHahajok/models/request"
 )
 
 func RecordOpenID(openId, unionId string) (int64, error) {
-	usermodel := models.NewUser()
-	lastInsertId, err := usermodel.RecordOpenId(openId, unionId)
+	userDao := dao.NewUser()
+	lastInsertId, err := userDao.RecordOpenId(openId, unionId)
 	if err != nil {
-		log.Errorf(err)
+		log.Error(err)
 		return 0, errors.New("系统繁忙, 请稍候再试!")
 	}
 	return lastInsertId, nil
+}
+
+func UpdateUserInfo(r *request.ReqUserInfo) error {
+	userDao := dao.NewUser()
+	return userDao.UpdateUserInfo(r)
 }
