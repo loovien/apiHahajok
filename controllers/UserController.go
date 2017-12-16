@@ -37,3 +37,7 @@ func GetUserOpenID(ctx echo.Context) error {
 	ctx.Echo().Logger.Infof("Info: UserOpenId: %v", userOpenId)
 	return ctx.JSON(http.StatusOK, utils.GetCommonResp(userOpenId, errhandle.SUCCESS_CODE, "success"))
 }
+
+func UpdateUserInfo(ctx echo.Context) error {
+
+}

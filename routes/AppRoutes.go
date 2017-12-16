@@ -7,4 +7,5 @@ import (
 
 func InitRoutes(e *echo.Echo) {
 	e.POST("/user/openid.json", controllers.GetUserOpenID)
+	e.PUT("/user/infos.json", )
 }

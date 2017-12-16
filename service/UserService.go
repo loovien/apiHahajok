@@ -9,14 +9,16 @@ package service
 
 import (
 	"github.com/vvotm/apiHahajok/models"
-	"github.com/vvotm/apiHahajok/errhandle"
+	"errors"
+	"github.com/labstack/gommon/log"
 )
 
 func RecordOpenID(openId, unionId string) (int64, error) {
 	usermodel := models.NewUser()
 	lastInsertId, err := usermodel.RecordOpenId(openId, unionId)
 	if err != nil {
-		return 0, errhandle.NewPDOError("数据库操作失败:" + err.Error())
+		log.Errorf(err)
+		return 0, errors.New("系统繁忙, 请稍候再试!")
 	}
 	return lastInsertId, nil
 }

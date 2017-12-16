@@ -9,6 +9,7 @@ package models
 
 import (
 	"github.com/vvotm/apiHahajok/db"
+	"github.com/vvotm/apiHahajok/errhandle"
 	"time"
 )
 
@@ -32,7 +33,7 @@ func (u *User) RecordOpenId(openId, unionId string) (int64, error) {
 	sql := "insert into user (openId, unionId, createdAt, updatedAt) values (?, ?, ?, ?)"
 	result, err := dbConn.Exec(sql, openId, unionId, nowTime, nowTime)
 	if err != nil{
-		return 0, err
+		return 0, errhandle.NewPDOError("数据插入失败: " + err.Error())
 	}
 	return result.LastInsertId()
 }
