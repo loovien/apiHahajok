@@ -7,8 +7,11 @@
 
 package service
 
-import "github.com/vvotm/apiHahajok/models/request"
+import (
+	"github.com/vvotm/apiHahajok/models/request"
+	"github.com/vvotm/apiHahajok/models/response"
+)
 
-func GetLatestJokersList(pageInfo request.ReqPage)  {
+func GetLatestJokersList(pageInfo request.ReqPage) response.RespJokerList {
 	
 }
