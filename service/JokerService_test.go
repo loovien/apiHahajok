@@ -9,17 +9,9 @@ package service
 
 import (
 	"testing"
-	"github.com/vvotm/apiHahajok/models/response"
-	"github.com/vvotm/apiHahajok/dao"
 	"github.com/vvotm/apiHahajok/models/request"
 )
 
 func TestGetLatestJokersList(tt *testing.T) {
-
-	b := []response.RespJokers{}
-	joker := dao.Joker{Id:1, Uid:23}
-	respJ := response.RespJokers{DoJoker:joker}
-	b = append(b, respJ)
-	tt.Log(b)
 	GetLatestJokersList(&request.ReqPage{1, 10})
 }

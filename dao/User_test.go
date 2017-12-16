@@ -38,3 +38,10 @@ func TestUser_UpdateUserInfo(t *testing.T) {
 		r.Lang, nowTime, r.OpenId)
 	t.Log(err)
 }
+
+func TestUser_GetUserInfoById(t *testing.T) {
+	userDao := NewUser()
+	resultSet := userDao.GetUserInfoById(1)
+	t.Log(resultSet)
+
+}

@@ -13,10 +13,15 @@ import (
 
 func TestJoker_GetJokerList(t *testing.T) {
 	joker := NewJoker()
-	list, err := joker.GetJokerList("id, classId, title, imageList", "")
+	list, err := joker.GetJokerList("*", "")
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Log(list)
 }
 
+func TestJoker_Count(t *testing.T) {
+	joker := NewJoker()
+	cnt := joker.Count("1=1")
+	t.Log(cnt)
+}

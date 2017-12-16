@@ -10,6 +10,4 @@ package response
 type RespJokerList struct {
 	RespPage
 	List []RespJokers `json:"list"`
-	Member RespUser `json:"member"`
-	Classification RespClassification `json:"classification"`
 }

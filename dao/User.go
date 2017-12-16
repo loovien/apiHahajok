@@ -20,11 +20,11 @@ const (
 	IS_SAVE = iota
 )
 type User struct {
-	id int `json:"id"`
-	OpenId int `json:"openId"`
-	UnionId int `json:"unionId"`
+	Id int `json:"id"`
+	OpenId string `json:"openId"`
+	UnionId string `json:"unionId"`
 	Nickname string `json:"nickname"`
-	Wallet int `json:"wallet"`
+	Wallet float64 `json:"wallet"`
 	Avatar string `json:"avatar"`
 	Gender int `json:"gender"`
 	Country string `json:"country"`
@@ -79,3 +79,16 @@ func (u *User) UpdateUserInfo(r *request.ReqUserInfo) (err error) {
 	}
 	return nil
 }
+
+func (u *User) GetUserInfoById(id int) User {
+	dbConn := db.GetConn()
+	sql := "select * from user where id = ?"
+	log.Infof("GetUserByIDSQL: %s", sql)
+	row := dbConn.QueryRow(sql, id)
+	userInfo := User{}
+	row.Scan(&userInfo.Id, &userInfo.OpenId, &userInfo.UnionId, &userInfo.Nickname, &userInfo.Wallet,
+		&userInfo.Avatar, &userInfo.Gender, &userInfo.Country, &userInfo.Province, &userInfo.City,
+		&userInfo.Lang, &userInfo.Issave, &userInfo.CreatedAt, &userInfo.UpdatedAt)
+	return userInfo
+}
+

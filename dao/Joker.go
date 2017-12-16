@@ -12,6 +12,7 @@ import (
 	"github.com/vvotm/apiHahajok/errhandle"
 	"github.com/labstack/gommon/log"
 	"fmt"
+	dbSql "database/sql"
 )
 
 type Joker struct {
@@ -19,8 +20,8 @@ type Joker struct {
 	Uid int `json:"uid"`
 	ClassId int `json:"classId"`
 	Title string `json:"title"`
-	Content string `json:"content"`
-	ImageList string `json:"imageList"`
+	Content dbSql.NullString `json:"content"`
+	ImageList dbSql.NullString `json:"imageList"`
 	MediaUrl string `json:"mediaUrl"`
 	Replies int `json:"replies"`
 	Status int `json:"status"`
@@ -34,12 +35,13 @@ func NewJoker() *Joker {
 }
 
 func (j *Joker) Count(conditions string) (cnt int) {
-	dbConn := db.GetConn()
-	sql := "select count(*) as cnt from joker where ?";
 	if conditions == "" {
 		conditions = "1 = 1";
 	}
-	dbConn.QueryRow(sql, conditions).Scan(&cnt)
+	dbConn := db.GetConn()
+	sql := fmt.Sprintf("select count(*) as cnt from joker where %s", conditions);
+	log.Infof("countSQL: %s", sql)
+	dbConn.QueryRow(sql).Scan(&cnt)
 	return cnt
 }
 
@@ -57,11 +59,14 @@ func (j *Joker) GetJokerList(columns, conditions string) (jokerList[]Joker, err 
 		return nil, errhandle.NewPDOError("查询数据失败", errhandle.DB_OPERATE_ERROR, err.Error())
 	}
 	var columnsSlice, _ = rows.Columns()
+	log.Info(columnsSlice)
 	jokerList = []Joker{}
 	for rows.Next()  {
 		var joker = Joker{}
-		scanColumnList := j.getScanColumnList(columnsSlice, &joker)
+		scanColumnList := j.getScanJokerColumnList(columnsSlice, &joker)
+		log.Infof("------------>:%v", scanColumnList)
 		rows.Scan(scanColumnList...)
+		log.Infof("xxxxxxxxxxxx=>%v", joker)
 		jokerList = append(jokerList, joker)
 	}
 	return jokerList, nil
@@ -81,7 +86,7 @@ func (j *Joker) DeleteJokerById(id int) (err error) {
 	return errhandle.NewPDOError("删除失败", errhandle.DB_OPERATE_ERROR, err.Error())
 }
 
-func (j *Joker) getScanColumnList(columns []string, joker *Joker) []interface{} {
+func (j *Joker) getScanJokerColumnList(columns []string, joker *Joker) []interface{} {
 	var scanColumnList = []interface{}{}
 	for _, column := range columns {
 		switch column {

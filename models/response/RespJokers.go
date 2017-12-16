@@ -11,4 +11,6 @@ import "github.com/vvotm/apiHahajok/dao"
 
 type RespJokers struct {
 	dao.Joker
+	Member RespUser `json:"member"`
+	Classification RespClassification `json:"classification"`
 }
