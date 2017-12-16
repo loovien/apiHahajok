@@ -9,7 +9,6 @@ import (
 	"github.com/vvotm/apiHahajok/service"
 	"errors"
 	"github.com/vvotm/apiHahajok/models/request"
-	"github.com/labstack/gommon/log"
 )
 
 func GetUserOpenID(ctx echo.Context) error {
@@ -44,12 +43,11 @@ func GetUserOpenID(ctx echo.Context) error {
 func UpdateUserInfo(ctx echo.Context) (err error) {
 	reqUserInfo := new(request.ReqUserInfo)
 	if err = ctx.Bind(reqUserInfo); err != nil {
-		return errors.New("参数缺失:" + err.Error())
+		return errors.New("抱歉, 必要的参数缺失!")
 	}
 	err = service.UpdateUserInfo(reqUserInfo)
 	if err != nil {
-		log.Info(err)
-		return ctx.JSON(http.StatusOK, utils.GetCommonResp(nil, errhandle.ERROR_CODE, err.Error()))
+		return err
 	}
 	return ctx.JSON(http.StatusOK, utils.GetCommonResp(reqUserInfo, errhandle.SUCCESS_CODE, "success"))
 }

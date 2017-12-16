@@ -12,6 +12,7 @@ import (
 	"sync"
 	"github.com/vvotm/apiHahajok/middleware"
 	"github.com/vvotm/apiHahajok/routes"
+	"github.com/vvotm/apiHahajok/errhandle"
 )
 
 var (
@@ -38,6 +39,7 @@ func GetApp() *App {
 func newEchoApp() *echo.Echo {
 	app := echo.New()
 	app.Debug = true
+	app.HTTPErrorHandler = errhandle.ErrorHandle
 	middleware.InitMiddleware(app) // initialize middleware
 	routes.InitRoutes(app) // initialize route
 	return app

@@ -7,8 +7,22 @@
 
 package errhandle
 
-import "github.com/labstack/echo"
+import (
+	"github.com/labstack/echo"
+	"net/http"
+	"github.com/vvotm/apiHahajok/utils"
+)
 
 func ErrorHandle(err error, ctx echo.Context)  {
-	
+	defer func() {
+		if r := recover(); r != nil {
+			ctx.JSON(http.StatusOK, utils.GetCommonResp(struct {
+				ErrMsg string `json:"errmsg"`
+			}{err.Error()}, ERROR_CODE, "抱歉, 网络繁忙, 请稍候再试!"))
+		}
+	}()
+	webErr := err.(AbsErrer)
+	ctx.JSON(http.StatusOK, utils.GetCommonResp(struct{
+		ErrMsg string `json:"errmsg"`
+	}{webErr.ErrorMsg()}, webErr.GetCode(), webErr.Error()))
 }

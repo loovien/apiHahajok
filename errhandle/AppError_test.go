@@ -7,9 +7,20 @@
 
 package errhandle
 
-import "testing"
+import (
+	"testing"
+	//"errors"
+)
 
 func TestNewPDOError(t *testing.T) {
 	pdoErr := NewPDOError("数据库错误", ERROR_CODE)
-	t.Log(pdoErr.Error())
+	//pdoErr := errors.New("hahah")
+	defer func() {
+		if r := recover(); r != nil {
+			t.Log("not implement")
+		}
+	}()
+	var absErr AbsErrer
+	absErr = pdoErr.(AbsErrer)
+	t.Log(absErr.GetCode())
 }

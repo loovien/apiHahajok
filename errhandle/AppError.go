@@ -7,24 +7,36 @@
 
 package errhandle
 
-type AbstractError struct {
-	Code int
-	Message string
+type AbsErrer interface {
+	GetCode() int
+	Error() string
+	ErrorMsg() string
 }
 
-func (p *AbstractError) GetCode() int  {
+type SuperError struct {
+	Code int `json:"code"`
+	Message string `json:"message"`
+	ErrMsg string `json:"errmsg"`
+
+}
+
+func (p *SuperError) GetCode() int  {
 	return p.Code
 }
 
-func (p *AbstractError) Error() string {
+func (p *SuperError) Error() string {
 	return p.Message
 }
 
-type PDOError struct {
-	AbstractError
+func (p *SuperError) ErrorMsg() string {
+	return p.ErrMsg
 }
-func NewPDOError(message string, code int) *PDOError {
+
+type PDOError struct {
+	*SuperError
+}
+func NewPDOError(message string, code int, errmsg string) AbsErrer {
 	return &PDOError{
-		AbstractError{code, message},
+		&SuperError{code, message, errmsg},
 	}
 }
