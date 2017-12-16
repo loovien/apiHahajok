@@ -7,9 +7,16 @@
 
 package service
 
-import "github.com/vvotm/apiHahajok/models"
+import (
+	"github.com/vvotm/apiHahajok/models"
+	"github.com/vvotm/apiHahajok/errhandle"
+)
 
 func RecordOpenID(openId, unionId string) (int64, error) {
 	usermodel := models.NewUser()
-	return usermodel.RecordOpenId(openId, unionId)
+	lastInsertId, err := usermodel.RecordOpenId(openId, unionId)
+	if err != nil {
+		return 0, errhandle.NewPDOError("数据库操作失败:" + err.Error())
+	}
+	return lastInsertId, nil
 }
