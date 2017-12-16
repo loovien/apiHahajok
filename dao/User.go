@@ -20,7 +20,20 @@ const (
 	IS_SAVE = iota
 )
 type User struct {
-
+	id int `json:"id"`
+	OpenId int `json:"openId"`
+	UnionId int `json:"unionId"`
+	Nickname string `json:"nickname"`
+	Wallet int `json:"wallet"`
+	Avatar string `json:"avatar"`
+	Gender int `json:"gender"`
+	Country string `json:"country"`
+	Province string `json:"province"`
+	City string `json:"city"`
+	Lang string `json:"lang"`
+	Issave int `json:"issave"`
+	CreatedAt int `json:"createdAt"`
+	UpdatedAt int `json:"updatedAt"`
 }
 
 func NewUser() *User {

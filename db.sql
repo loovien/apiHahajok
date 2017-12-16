@@ -25,3 +25,44 @@ create table if not exists user (
     index idx_city (city)
 ) engine=innodb charset=utf8 comment '用户信息表';
 
+-- 分类名称
+create table if not exists classification (
+    id int unsigned auto_increment,
+    name varchar(64) not null default '' comment '分类名称',
+    icon varchar(255) not null default '' comment '分类ICON',
+    createdAt int unsigned not null default 0 comment '用户平台创建时间',
+    updatedAt int unsigned not null default 0 comment '用户平台更新时间',
+
+    primary key (id)
+) engine=innodb charset=utf8 comment '笑话分类表';
+
+-- 段子表
+create table if not exists joker (
+    id int unsigned auto_increment,
+    uid int unsigned not null default '0' comment '所属用户UID',
+    classId int unsigned not null default '0' comment '所属于分类ID',
+    title varchar(64) not null default '段子标题',
+    content text null default null comment '段子内容',
+    imageList text null default null comment '段子图片, json',
+    mediaUrl varchar(255) not null default '' comment '视频地址',
+    replies int unsigned not null default '0' comment '回复数量',
+    status tinyint not null default '0' comment '状态, [-1/删除, 0/审核中, 1/正常 ]',
+    createdAt int unsigned not null default 0 comment '用户平台创建时间',
+    passedAt int unsigned not null default 0 comment '审核通过时间',
+    updatedAt int unsigned not null default 0 comment '用户平台更新时间',
+
+    primary key (id),
+    index idx_uid (uid),
+    index idx_classid (classId),
+    index idx_title (title),
+    index idx_status (status),
+    index idx_createdat (createdAt),
+    index idx_updatedat (updatedAt)
+) engine=innodb charset=utf8 comment '段子表';
+
+-- 评论表
+create table if not exists replies (
+    id int unsigned auto_increment,
+    jokerId int unsigned not null default '0' comment '段子ID',
+    uid int unsigned not null default '0' comment '评论用户UID',
+) engine=innodb charset=utf8 comment '用户评论表';
