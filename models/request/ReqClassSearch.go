@@ -9,7 +9,7 @@ package request
 
 type ReqClassSearch struct {
 	ReqPage
-	Name string `json:"name"`
+	Name string `json:"name" form:"name" query:"name"`
 }
 
 func NewReqClassSearch() *ReqClassSearch {
