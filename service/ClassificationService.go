@@ -14,18 +14,22 @@ import (
 	"github.com/vvotm/apiHahajok/dao"
 )
 
-func GetClassificationList(pageInfo *request.ReqPage) (respClassificationList response.RespClassificationList, err error) {
-	respClassificationList.RespPage.Size = pageInfo.Size
+func GetClassificationList(classSearch *request.ReqClassSearch) (respClassificationList response.RespClassificationList, err error) {
+	respClassificationList.RespPage.Size = classSearch.Size
+	conditions := "status = 1"
+	if classSearch.Name != "" {
+		conditions += " and name like '" + classSearch.Name + "%'"
+	}
 	 commonCriteria := criteria.CommonCriteria{
-		Condition: "status = 1",
+		Condition: conditions,
 	}
 	classificationDao := dao.NewClassification()
 	respClassificationList.RespPage.Cnt = classificationDao.Count(commonCriteria)
 
 	pageCriteria := criteria.PageCriteria{
 		CommonCriteria: commonCriteria,
-		Page: pageInfo.Page,
-		Size: pageInfo.Size,
+		Page: classSearch.Page,
+		Size: classSearch.Size,
 	}
 	classificationList, err := classificationDao.GetClassificationList(pageCriteria)
 	if err != nil {

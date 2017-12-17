@@ -11,3 +11,10 @@ type ReqClassSearch struct {
 	ReqPage
 	Name string `json:"name"`
 }
+
+func NewReqClassSearch() *ReqClassSearch {
+	return &ReqClassSearch{
+		ReqPage: *NewReqPage(),
+		Name: "",
+	}
+}
