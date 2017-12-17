@@ -42,3 +42,33 @@ func GetLatestJokersList(pageInfo *request.ReqPage) (respJokerList response.Resp
 	}
 	return respJokerList, nil
 }
+
+func GetHotsJokersList(pageInfo *request.ReqPage) (respJokerList response.RespJokerList, err error) {
+	respJokerList.Size = pageInfo.Size
+
+	jokerDao := dao.NewJoker()
+	commonCriteria := criteria.CommonCriteria{
+		Condition: "status = 1",
+		Order: "replies DESC",
+	}
+	respJokerList.Cnt = jokerDao.Count(commonCriteria)
+	jokerList, err := jokerDao.GetJokerList(criteria.PageCriteria{
+		Page: pageInfo.Page,
+		Size: pageInfo.Size,
+		CommonCriteria: commonCriteria,
+
+	})
+	if err != nil {
+		return respJokerList, err
+	}
+	userDao := dao.NewUser()
+	classificationDao := dao.NewClassification()
+	for _, joker := range jokerList{
+		member := response.RespUser{User:userDao.GetUserInfoById(joker.Uid)}
+		classification := response.RespClassification{
+			Classification:classificationDao.GetClassificationById(joker.ClassId)}
+		respJoker := response.RespJokers{Joker:joker, Member:member, Classification:classification}
+		respJokerList.List = append(respJokerList.List, respJoker)
+	}
+	return respJokerList, nil
+}

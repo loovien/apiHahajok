@@ -25,3 +25,13 @@ func GetLatestsJokersList(ctx echo.Context) (err error) {
 	errhandle.CheckError(err)
 	return ctx.JSON(http.StatusOK, utils.GetCommonResp(resp, errhandle.SUCCESS_CODE, "success"))
 }
+
+func GetHotsJokersList(ctx echo.Context) (err error) {
+	pageInfo := request.NewReqPage()
+	if err = ctx.Bind(pageInfo); err != nil {
+		return err
+	}
+	resp, err := service.GetHotsJokersList(pageInfo)
+	errhandle.CheckError(err)
+	return ctx.JSON(http.StatusOK, utils.GetCommonResp(resp, errhandle.SUCCESS_CODE, "success"))
+}
