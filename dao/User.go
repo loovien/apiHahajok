@@ -63,21 +63,31 @@ func (u *User) RecordOpenId(openId, unionId string) (int, error) {
 }
 
 func (u *User) UpdateUserInfo(r *request.ReqUserInfo) (err error) {
+	var nowTime int64 = time.Now().Unix()
 	dbConn := db.GetConn()
-	nowTime := time.Now().Unix()
-	countSql := "select id from user where openId = ? and issave = ? and updatedAt > ?"
-	var count int = 0
+	userRepo := User{}
 	// 10 minute don't update
-	dbConn.Raw(countSql, r.OpenId, IS_SAVE, time.Now().Unix() - 600).Scan(&count)
-	log.Info(count)
-	if count > 0 {
+	log.Info(r)
+	dbConn.Model(&userRepo).Where("openId = ? and issave = ? and updatedAt < ?",
+		r.OpenId, IS_SAVE, time.Now().Unix() - 600).First(&userRepo)
+	if userRepo.Id <= 0 {
 		return  nil
 	}
-	updateSql := "update user set unionId = ?, nickname = ?, avatar = ?, gender = ?, country = ?," +
-		 "province = ?, city = ?, lang = ?, issave = ?, updatedAt = ? where openId = ?"
-	log.Infof("SQL:%s DATA: %v", updateSql, r)
-	dbConn = dbConn.Exec(updateSql, r.UnionId, r.Nickname, r.Avatar, r.Gender, r.Country, r.Province, r.City,
-		r.Lang, IS_SAVE, nowTime, r.OpenId)
+	updateUserDao := User{
+		Id: userRepo.Id,
+		OpenId: userRepo.OpenId,
+		UnionId: r.UnionId,
+		Nickname: r.Nickname,
+		Avatar: r.Avatar,
+		Gender: r.Gender,
+		Country: r.Country,
+		Province: r.Province,
+		City: r.City,
+		Lang: r.Lang,
+		Issave: IS_SAVE,
+		UpdatedAt: int(nowTime),
+	}
+	dbConn = dbConn.Save(&updateUserDao)
 	if dbConn.Error != nil {
 		log.Error(err)
 		return  errhandle.NewPDOError("更新数据失败!", errhandle.DB_OPERATE_ERROR, dbConn.Error.Error())

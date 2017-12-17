@@ -11,58 +11,50 @@ import (
 	"github.com/vvotm/apiHahajok/db"
 	"github.com/vvotm/apiHahajok/errhandle"
 	"github.com/labstack/gommon/log"
-	"fmt"
-	dbSql "database/sql"
+	"github.com/vvotm/apiHahajok/dao/criteria"
 )
 
 type Joker struct {
-	Id int `json:"id"`
+	Id int `json:"id" gorm:"primary_key"`
 	Uid int `json:"uid"`
-	ClassId int `json:"classId"`
+	ClassId int `json:"classId" gorm:"column:classId"`
 	Title string `json:"title"`
-	Content dbSql.NullString `json:"content"`
-	ImageList dbSql.NullString `json:"imageList"`
-	MediaUrl string `json:"mediaUrl"`
+	Content string `json:"content"`
+	ImageList string `json:"imageList" gorm:"column:imageList"`
+	MediaUrl string `json:"mediaUrl" gorm:"column:mediaUrl"`
 	Replies int `json:"replies"`
 	Status int `json:"status"`
-	CreatedAt int `json:"createdAt"`
-	PassedAt int `json:"passedAt"`
-	UpdatedAt int `json:"updatedAt"`
+	CreatedAt int `json:"createdAt" gorm:"column:createdAt"`
+	PassedAt int `json:"passedAt" gorm:"column:passedAt"`
+	UpdatedAt int `json:"updatedAt" gorm:"column:updatedAt"`
+}
+
+func (Joker) TableName() string {
+	return "joker"
 }
 
 func NewJoker() *Joker {
 	return &Joker{}
 }
 
-func (j *Joker) Count(conditions string) (cnt int) {
-	if conditions == "" {
-		conditions = "1 = 1";
-	}
+func (j *Joker) Count(conditions string, bind ...interface{}) (cnt int) {
 	dbConn := db.GetConn()
-	sql := fmt.Sprintf("select count(*) as cnt from joker where %s", conditions);
-	log.Infof("countSQL: %s", sql)
-	dbConn.Raw(sql).Scan(&cnt)
+	dbConn.Model(j).Where(conditions, bind...).Count(&cnt)
 	return cnt
 }
 
-func (j *Joker) GetJokerList(columns, conditions string) (jokerList[]Joker, err error) {
-	dbConn := db.GetConn()
-	if conditions == "" {
-		conditions = "1 = 1"
-	}
-	sql := fmt.Sprintf("select %s from joker where %s", columns, conditions)
-	log.Info(sql)
-	rows, err := dbConn.Raw(sql).Rows()
+func (j *Joker) GetJokerList(criteria criteria.PageCriteria) (jokerList[]Joker, err error) {
+	dbConn := db.GetConn().Debug().Model(j)
+	dbConn = ApplyPageQuery(dbConn, criteria)
+	rows, err := dbConn.Rows()
+	defer rows.Close()
 	if err != nil {
 		log.Error(err)
 		return nil, errhandle.NewPDOError("查询数据失败", errhandle.DB_OPERATE_ERROR, err.Error())
 	}
-	var columnsSlice, _ = rows.Columns()
-	log.Info(columnsSlice)
-	jokerList = []Joker{}
 	for rows.Next()  {
 		var joker = Joker{}
-		rows.Scan(&joker)
+		dbConn.ScanRows(rows, &joker)
 		jokerList = append(jokerList, joker)
 	}
 	return jokerList, nil

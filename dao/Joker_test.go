@@ -9,11 +9,19 @@ package dao
 
 import (
 	"testing"
+	"github.com/vvotm/apiHahajok/dao/criteria"
 )
 
 func TestJoker_GetJokerList(t *testing.T) {
 	joker := NewJoker()
-	list, err := joker.GetJokerList("*", "")
+	criteria := criteria.PageCriteria{
+		Condition: "status = ?",
+		ConditionBind: []interface{}{1},
+		Page: 1,
+		Size: 10,
+		Group: "status",
+	}
+	list, err := joker.GetJokerList(criteria)
 	if err != nil {
 		t.Fatal(err)
 	}
