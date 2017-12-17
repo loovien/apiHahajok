@@ -30,10 +30,14 @@ create table if not exists classification (
     id int unsigned auto_increment,
     name varchar(64) not null default '' comment '分类名称',
     icon varchar(255) not null default '' comment '分类ICON',
+    status tinyint unsigned not null default 0 comment '状态[0/正常, 1/删除]',
     createdAt int unsigned not null default 0 comment '用户平台创建时间',
     updatedAt int unsigned not null default 0 comment '用户平台更新时间',
+    deletedAt int unsigned not null default '0' comment '删除时间',
 
-    primary key (id)
+
+    primary key (id),
+    index idx_status (status)
 ) engine=innodb charset=utf8 comment '笑话分类表';
 
 -- 段子表

@@ -15,3 +15,12 @@ import (
 func TestGetLatestJokersList(tt *testing.T) {
 	GetLatestJokersList(&request.ReqPage{1, 10})
 }
+
+func TestGetClassificationList(t *testing.T) {
+	pageInfo := request.NewReqPage()
+	resp, err := GetClassificationList(pageInfo)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Log(resp)
+}
