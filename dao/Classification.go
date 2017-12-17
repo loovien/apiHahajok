@@ -17,6 +17,7 @@ type Classification struct {
 	Id  int `json:"id"`
 	Name  string `json:"name"`
 	Icon string `json:"icon"`
+	Status int `json:"status"`
 	CreatedAt int `json:"createdAt"`
 	UpdatedAt int `json:"updatedAt"`
 }
