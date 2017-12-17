@@ -20,10 +20,10 @@ const (
 	IS_SAVE = iota
 )
 type User struct {
-	Id int `json:"id"`
-	OpenId string `json:"openId"`
-	UnionId string `json:"unionId"`
-	Nickname string `json:"nickname"`
+	Id int `json:"id" gorm:"primary_key"`
+	OpenId string `json:"openId" gorm:"column:openId"`
+	UnionId string `json:"unionId" gorm:"column:unionId"`
+	Nickname string `json:"nickname" gorm:"nickname"`
 	Wallet float64 `json:"wallet"`
 	Avatar string `json:"avatar"`
 	Gender int `json:"gender"`
@@ -32,29 +32,34 @@ type User struct {
 	City string `json:"city"`
 	Lang string `json:"lang"`
 	Issave int `json:"issave"`
-	CreatedAt int `json:"createdAt"`
-	UpdatedAt int `json:"updatedAt"`
+	CreatedAt int `json:"createdAt" gorm:"column:createdAt"`
+	UpdatedAt int `json:"updatedAt" gorm:"column:updatedAt"`
+}
+
+func (User) TableName() string {
+	return "user"
 }
 
 func NewUser() *User {
 	return &User{}
 }
 
-func (u *User) RecordOpenId(openId, unionId string) (int64, error) {
+func (u *User) RecordOpenId(openId, unionId string) (int, error) {
 	dbConn := db.GetConn()
-	nowTime := time.Now().Unix()
-	countSql := "select id from user where openId = ?"
-	var count int64 = 0
-	dbConn.QueryRow(countSql, openId).Scan(&count)
+
+	var count int
+	dbConn.Model(u).First("openId = ?", openId).Count(&count)
 	if count > 0 {
-		return count, nil
+		return 0, nil
 	}
-	sql := "insert into user (openId, unionId, issave, createdAt, updatedAt) values (?, ?, ?, ?, ?)"
-	result, err := dbConn.Exec(sql, openId, unionId, IS_SAVE, nowTime, nowTime)
-	if err != nil {
-		return 0, errhandle.NewPDOError("数据插入失败", errhandle.DB_OPERATE_ERROR, err.Error())
+	nowTime := int(time.Now().Unix())
+	userRow := User{OpenId:openId, UnionId:unionId, Issave:IS_SAVE, CreatedAt:nowTime, UpdatedAt:nowTime}
+	dbConn = dbConn.Create(userRow)
+	if dbConn.Error != nil {
+		log.Error(dbConn.Error)
+		return 0, errhandle.NewPDOError("插入数据库失败", errhandle.DB_OPERATE_ERROR, dbConn.Error.Error())
 	}
-	return result.LastInsertId()
+	return userRow.Id, nil
 }
 
 func (u *User) UpdateUserInfo(r *request.ReqUserInfo) (err error) {
@@ -63,7 +68,7 @@ func (u *User) UpdateUserInfo(r *request.ReqUserInfo) (err error) {
 	countSql := "select id from user where openId = ? and issave = ? and updatedAt > ?"
 	var count int = 0
 	// 10 minute don't update
-	dbConn.QueryRow(countSql, r.OpenId, IS_SAVE, time.Now().Unix() - 600).Scan(&count)
+	dbConn.Raw(countSql, r.OpenId, IS_SAVE, time.Now().Unix() - 600).Scan(&count)
 	log.Info(count)
 	if count > 0 {
 		return  nil
@@ -71,24 +76,18 @@ func (u *User) UpdateUserInfo(r *request.ReqUserInfo) (err error) {
 	updateSql := "update user set unionId = ?, nickname = ?, avatar = ?, gender = ?, country = ?," +
 		 "province = ?, city = ?, lang = ?, issave = ?, updatedAt = ? where openId = ?"
 	log.Infof("SQL:%s DATA: %v", updateSql, r)
-	_, err = dbConn.Exec(updateSql, r.UnionId, r.Nickname, r.Avatar, r.Gender, r.Country, r.Province, r.City,
+	dbConn = dbConn.Exec(updateSql, r.UnionId, r.Nickname, r.Avatar, r.Gender, r.Country, r.Province, r.City,
 		r.Lang, IS_SAVE, nowTime, r.OpenId)
-	if err != nil {
+	if dbConn.Error != nil {
 		log.Error(err)
-		return  errhandle.NewPDOError("更新数据失败!", errhandle.DB_OPERATE_ERROR, err.Error())
+		return  errhandle.NewPDOError("更新数据失败!", errhandle.DB_OPERATE_ERROR, dbConn.Error.Error())
 	}
 	return nil
 }
 
-func (u *User) GetUserInfoById(id int) User {
+func (u *User) GetUserInfoById(id int) (userInfo User) {
 	dbConn := db.GetConn()
-	sql := "select * from user where id = ?"
-	log.Infof("GetUserByIDSQL: %s", sql)
-	row := dbConn.QueryRow(sql, id)
-	userInfo := User{}
-	row.Scan(&userInfo.Id, &userInfo.OpenId, &userInfo.UnionId, &userInfo.Nickname, &userInfo.Wallet,
-		&userInfo.Avatar, &userInfo.Gender, &userInfo.Country, &userInfo.Province, &userInfo.City,
-		&userInfo.Lang, &userInfo.Issave, &userInfo.CreatedAt, &userInfo.UpdatedAt)
+	dbConn.First(&userInfo, id)
 	return userInfo
 }
 

@@ -24,8 +24,6 @@ func NewClassification() *Classification {
 func (c *Classification) GetClassificationById(id int) (classification Classification) {
 	dbConn := db.GetConn()
 	sql := "select * from classification where id = ?"
-	row := dbConn.QueryRow(sql, id)
-	row.Scan(&classification.Id, &classification.Name, &classification.Icon,
-		&classification.CreatedAt, &classification.UpdatedAt)
+	dbConn.Raw(sql, id).Scan(&classification)
 	return classification
 }

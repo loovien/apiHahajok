@@ -9,14 +9,16 @@ package db
 
 import (
 	"testing"
-	"time"
 )
 
 func TestGetConn(t *testing.T) {
 	db := GetConn()
-	result, err := db.Exec("insert into user (openId, createdAt) value(?, ?)", "罗文", time.Now().Unix())
-	if err != nil {
-		t.Log(err)
-	}
-	t.Log(result)
+	user := struct {
+		Id int
+		OpenId string
+		UnionId string
+		Nickname string
+	}{}
+	db.Raw("select * from user where id = 1").Scan(&user)
+	t.Log(user)
 }
