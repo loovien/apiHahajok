@@ -11,16 +11,23 @@ import (
 	"github.com/vvotm/apiHahajok/models/request"
 	"github.com/vvotm/apiHahajok/models/response"
 	"github.com/vvotm/apiHahajok/dao"
-	"fmt"
+	"github.com/vvotm/apiHahajok/dao/criteria"
 )
 
 func GetLatestJokersList(pageInfo *request.ReqPage) (respJokerList response.RespJokerList, err error) {
 	respJokerList.Size = pageInfo.Size
 
 	jokerDao := dao.NewJoker()
-	respJokerList.Cnt = jokerDao.Count("status = 1")
-	conditions := fmt.Sprintf("status = 1 limit %d, %d", (pageInfo.Page - 1) * pageInfo.Size, pageInfo.Size )
-	jokerList, err := jokerDao.GetJokerList("*", conditions)
+	commonCriteria := criteria.CommonCriteria{
+		Condition: "status = 1",
+	}
+	respJokerList.Cnt = jokerDao.Count(commonCriteria)
+	jokerList, err := jokerDao.GetJokerList(criteria.PageCriteria{
+		Page: pageInfo.Page,
+		Size: pageInfo.Size,
+		CommonCriteria: commonCriteria,
+
+	})
 	if err != nil {
 		return respJokerList, err
 	}
@@ -33,6 +40,5 @@ func GetLatestJokersList(pageInfo *request.ReqPage) (respJokerList response.Resp
 		respJoker := response.RespJokers{Joker:joker, Member:member, Classification:classification}
 		respJokerList.List = append(respJokerList.List, respJoker)
 	}
-	fmt.Println(respJokerList)
 	return respJokerList, nil
 }

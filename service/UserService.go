@@ -14,7 +14,7 @@ import (
 	"github.com/vvotm/apiHahajok/models/request"
 )
 
-func RecordOpenID(openId, unionId string) (int64, error) {
+func RecordOpenID(openId, unionId string) (int, error) {
 	userDao := dao.NewUser()
 	lastInsertId, err := userDao.RecordOpenId(openId, unionId)
 	if err != nil {

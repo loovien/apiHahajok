@@ -17,13 +17,16 @@ type Classification struct {
 	UpdatedAt int `json:"updatedAt"`
 }
 
+func (Classification) TableName() string  {
+	return "classification"
+}
+
 func NewClassification() *Classification {
 	return &Classification{}
 }
 
 func (c *Classification) GetClassificationById(id int) (classification Classification) {
-	dbConn := db.GetConn()
-	sql := "select * from classification where id = ?"
-	dbConn.Raw(sql, id).Scan(&classification)
+	dbConn := db.GetConn().Model(c)
+	dbConn.First(&classification, id)
 	return classification
 }
