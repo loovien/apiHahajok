@@ -8,16 +8,7 @@
 package criteria
 
 type PageCriteria struct {
-	Condition string
-	ConditionBind []interface{}
-	Columns string
-	Order string
-	ReOrder bool
+	CommonCriteria
 	Page int
 	Size int
-	OrCondition string
-	OrConditionBind []interface{}
-	Group string
-	Having string
-	HavingBind []interface{}
 }

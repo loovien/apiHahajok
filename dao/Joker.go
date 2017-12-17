@@ -37,9 +37,10 @@ func NewJoker() *Joker {
 	return &Joker{}
 }
 
-func (j *Joker) Count(conditions string, bind ...interface{}) (cnt int) {
-	dbConn := db.GetConn()
-	dbConn.Model(j).Where(conditions, bind...).Count(&cnt)
+func (j *Joker) Count(criteria criteria.CommonCriteria) (cnt int) {
+	dbConn := db.GetConn().Model(j)
+	dbConn = ApplyCommonQuery(dbConn, criteria)
+	dbConn.Count(&cnt)
 	return cnt
 }
 
@@ -60,10 +61,9 @@ func (j *Joker) GetJokerList(criteria criteria.PageCriteria) (jokerList[]Joker, 
 	return jokerList, nil
 }
 
-func (j *Joker) DeleteJoker(conditions string) (err error) {
-	dbConn := db.GetConn()
-	sql := "delete from jocker where ?"
-	dbConn.Exec(sql, conditions)
+func (j *Joker) DeleteJoker(conditions string, bind ...interface{}) (err error) {
+	dbConn := db.GetConn().Model(j)
+	dbConn.Where(conditions, bind...).Delete(j)
 	if dbConn.Error != nil {
 		return errhandle.NewPDOError("删除失败", errhandle.DB_OPERATE_ERROR, dbConn.Error.Error())
 	}
