@@ -44,6 +44,7 @@ create table if not exists classification (
 create table if not exists joker (
     id int unsigned auto_increment,
     uid int unsigned not null default '0' comment '所属用户UID',
+    uniqueId varchar(64) not null default '' comment '惟一标识ID, 用户爬虫',
     classId int unsigned not null default '0' comment '所属于分类ID',
     title varchar(64) not null default '' comment '段子标题',
     content text null default null comment '段子内容',
@@ -57,6 +58,7 @@ create table if not exists joker (
 
     primary key (id),
     index idx_uid (uid),
+    unique index idx_uniqueid (uniqueId),
     index idx_classid (classId),
     index idx_title (title),
     index idx_status (status),
