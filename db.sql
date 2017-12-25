@@ -1,7 +1,7 @@
 use hahajok;
 -- 用户表
 create table if not exists user (
-    id int unsigned auto_increment,
+    id bigint unsigned auto_increment,
     openId varchar(64) not null default '' comment '用户OPENID',
     unionId varchar(64) not null default '' comment '用户对应开放平台的唯一ID',
     nickname varchar(32) not null default '' comment '用户昵称',
@@ -27,14 +27,13 @@ create table if not exists user (
 
 -- 分类名称
 create table if not exists classification (
-    id int unsigned auto_increment,
+    id bigint  unsigned auto_increment,
     name varchar(64) not null default '' comment '分类名称',
     icon varchar(255) not null default '' comment '分类ICON',
     status tinyint unsigned not null default 0 comment '状态[0/正常, 1/删除]',
     createdAt int unsigned not null default 0 comment '用户平台创建时间',
     updatedAt int unsigned not null default 0 comment '用户平台更新时间',
     deletedAt int unsigned not null default '0' comment '删除时间',
-
 
     primary key (id),
     index idx_status (status)
@@ -60,6 +59,7 @@ create table if not exists joker (
     index idx_uid (uid),
     unique index idx_uniqueid (uniqueId),
     index idx_classid (classId),
+    index idx_uniqueid (uniqueId),
     index idx_title (title),
     index idx_status (status),
     index idx_createdat (createdAt),

@@ -17,7 +17,8 @@ func TestGetLatestJokersList(tt *testing.T) {
 }
 
 func TestGetClassificationList(t *testing.T) {
-	pageInfo := request.NewReqPage()
+	pageInfo := request.NewReqClassSearch()
+	pageInfo.Name = "I"
 	resp, err := GetClassificationList(pageInfo)
 	if err != nil {
 		t.Fatal(err)

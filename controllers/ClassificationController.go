@@ -17,7 +17,7 @@ import (
 )
 
 func GetClassificationList(ctx echo.Context) (err error)  {
-	pageInfo := request.NewReqPage()
+	pageInfo := request.NewReqClassSearch()
 	if err = ctx.Bind(pageInfo); err != nil {
 		return err
 	}
