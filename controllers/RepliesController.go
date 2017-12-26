@@ -40,6 +40,6 @@ func PostReplies(ctx echo.Context) (err error)  {
 	}
 	resp := struct {
 		LastId int `json:"lastId"`
-	}{lastId: lastInsertId}
+	}{LastId: lastInsertId}
 	return ctx.JSON(http.StatusOK, utils.GetCommonResp(resp, errhandle.SUCCESS_CODE, "success"))
 }
