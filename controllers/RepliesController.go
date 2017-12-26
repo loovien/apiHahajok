@@ -15,6 +15,7 @@ import (
 	"github.com/vvotm/apiHahajok/errhandle"
 	"net/http"
 	"github.com/vvotm/apiHahajok/utils"
+	"github.com/vvotm/apiHahajok/models/validate"
 )
 
 func GetRepliesListByJokerId(ctx echo.Context) (err error)  {
@@ -33,6 +34,10 @@ func PostReplies(ctx echo.Context) (err error)  {
 	replies := request.NewReqReplies()
 	if err = ctx.Bind(replies); err != nil {
 		return  err;
+	}
+	repliesValidate := validate.NewRepliesValidate()
+	if err = repliesValidate.Validate(replies); err != nil {
+		return err
 	}
 	lastInsertId, err := service.PostReplies(replies)
 	if err != nil {

@@ -8,9 +8,9 @@
 package request
 
 type ReqReplies struct {
-	JokerId int `json:"jokerId" form:"jokerId" query:"jokerId"`
-	Uid int `json:"uid" form:"uid" query:"uid"`
-	Content string `json:"content" form:"content" query:"content"`
+	JokerId int `json:"jokerId" form:"jokerId" query:"jokerId" validate:"required"`
+	Uid int `json:"uid" form:"uid" query:"uid" validate:"required"`
+	Content string `json:"content" form:"content" query:"content" validate:"required"`
 	ImageList string `json:"imageList" form:"imageList" query:"imageList"`
 }
 
