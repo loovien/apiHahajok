@@ -28,3 +28,18 @@ func GetRepliesListByJokerId(ctx echo.Context) (err error)  {
 	errhandle.CheckError(err)
 	return ctx.JSON(http.StatusOK, utils.GetCommonResp(resp, errhandle.SUCCESS_CODE, "success"))
 }
+
+func PostReplies(ctx echo.Context) (err error)  {
+	replies := request.NewReqReplies()
+	if err = ctx.Bind(replies); err != nil {
+		return  err;
+	}
+	lastInsertId, err := service.PostReplies(replies)
+	if err != nil {
+		return err
+	}
+	resp := struct {
+		LastId int `json:"lastId"`
+	}{lastId: lastInsertId}
+	return ctx.JSON(http.StatusOK, utils.GetCommonResp(resp, errhandle.SUCCESS_CODE, "success"))
+}

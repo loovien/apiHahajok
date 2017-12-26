@@ -11,8 +11,10 @@ func InitRoutes(e *echo.Echo) {
 
 	e.GET("/jokers/latests.json", controllers.GetLatestsJokersList)
 	e.GET("/jokers/hots.json", controllers.GetHotsJokersList)
-	e.GET("/jokers/:id/replies.json", controllers.GetRepliesListByJokerId)
 
 	e.GET("/classification/list.json", controllers.GetClassificationList)
+
+	e.POST("/replies.json", controllers.PostReplies)
+	e.GET("/replies/jokers/:id/list.json", controllers.GetRepliesListByJokerId)
 
 }
