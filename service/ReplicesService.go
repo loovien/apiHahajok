@@ -37,7 +37,12 @@ func GetRepliesByJokerId(pageInfo *request.ReqPage, id int) (respRepliesList res
 		return respRepliesList, err
 	}
 	for _, replies := range repliesList {
-		respReplies := response.RespReplies{Replies: replies}
+		userDao := dao.NewUser()
+		userInfo := userDao.GetUserInfoById(replies.Uid)
+		respReplies := response.RespReplies{
+			Replies: replies,
+			Member: userInfo,
+		}
 		respRepliesList.List = append(respRepliesList.List, respReplies)
 	}
 	return respRepliesList, nil

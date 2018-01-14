@@ -11,4 +11,5 @@ import "github.com/vvotm/apiHahajok/dao"
 
 type RespReplies struct {
 	dao.Replies
+	Member dao.User `json:"member"`
 }
