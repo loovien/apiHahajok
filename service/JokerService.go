@@ -72,3 +72,26 @@ func GetHotsJokersList(pageInfo *request.ReqPage) (respJokerList response.RespJo
 	}
 	return respJokerList, nil
 }
+
+func GetJokersById(id int) (*response.RespJokers, error) {
+	jokerDao := dao.NewJoker()
+	query := criteria.CommonCriteria{
+		Condition: "id = ?",
+		ConditionBind: []interface{}{id},
+	}
+	joker, _ := jokerDao.GetOne(query)
+
+	userDao := dao.NewUser()
+	member := userDao.GetUserInfoById(joker.Uid)
+	classificationDao := dao.NewClassification()
+	classification := classificationDao.GetClassificationById(joker.ClassId)
+	return &response.RespJokers{
+		Joker: *joker,
+		Member: response.RespUser{
+			User: member,
+		},
+		Classification: response.RespClassification{
+			Classification: classification,
+		},
+	}, nil
+}

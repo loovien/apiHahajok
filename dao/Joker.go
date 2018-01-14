@@ -61,6 +61,13 @@ func (j *Joker) GetJokerList(criteria criteria.PageCriteria) (jokerList[]Joker, 
 	return jokerList, nil
 }
 
+func (j *Joker) GetOne(criteria criteria.CommonCriteria) (*Joker, error) {
+	dbConn := db.GetConn().Debug().Model(j)
+	dbConn = ApplyCommonQuery(dbConn, criteria)
+	dbConn.First(j)
+	return j, nil
+}
+
 func (j *Joker) DeleteJoker(conditions string, bind ...interface{}) (err error) {
 	dbConn := db.GetConn().Model(j)
 	dbConn.Where(conditions, bind...).Delete(j)
