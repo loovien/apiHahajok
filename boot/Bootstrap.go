@@ -13,6 +13,7 @@ import (
 	"github.com/vvotm/apiHahajok/middleware"
 	"github.com/vvotm/apiHahajok/routes"
 	"github.com/vvotm/apiHahajok/errhandle"
+	"github.com/vvotm/apiHahajok/db"
 )
 
 var (
@@ -37,6 +38,8 @@ func GetApp() *App {
 }
 
 func newEchoApp() *echo.Echo {
+	dbmgr := db.NewDbMgr()
+	dbmgr.Init()
 	app := echo.New()
 	app.Debug = true
 	app.HTTPErrorHandler = errhandle.ErrorHandle
