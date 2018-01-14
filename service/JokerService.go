@@ -95,3 +95,31 @@ func GetJokersById(id int) (*response.RespJokers, error) {
 		},
 	}, nil
 }
+
+func GetClassJokersList(pageInfo *request.ReqPage, classId int) (respJokerList response.RespJokerList,err error) {
+	jokerDao := dao.NewJoker()
+	query := criteria.CommonCriteria{
+		Condition: "classId = ? AND status = 1",
+		Order: "replies DESC",
+		ConditionBind: []interface{}{classId},
+	}
+	pageQuery := criteria.PageCriteria{
+		CommonCriteria: query,
+		Page: pageInfo.Page,
+		Size: pageInfo.Size,
+	}
+	jokerList, err := jokerDao.GetJokerList(pageQuery)
+	if err != nil {
+		return respJokerList, err
+	}
+	userDao := dao.NewUser()
+	classificationDao := dao.NewClassification()
+	for _, joker := range jokerList{
+		member := response.RespUser{User:userDao.GetUserInfoById(joker.Uid)}
+		classification := response.RespClassification{
+			Classification:classificationDao.GetClassificationById(joker.ClassId)}
+		respJoker := response.RespJokers{Joker:joker, Member:member, Classification:classification}
+		respJokerList.List = append(respJokerList.List, respJoker)
+	}
+	return respJokerList, nil
+}

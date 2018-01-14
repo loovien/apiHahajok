@@ -15,7 +15,6 @@ import (
 	"net/http"
 	"github.com/vvotm/apiHahajok/utils"
 	"strconv"
-	"github.com/labstack/gommon/log"
 )
 
 func GetLatestsJokersList(ctx echo.Context) (err error) {
@@ -40,10 +39,25 @@ func GetHotsJokersList(ctx echo.Context) (err error) {
 
 func GetJokersById(ctx echo.Context) (err error)  {
 	id, _ := strconv.Atoi(ctx.Param("id"))
-	log.Infof("-----------%d", id)
 	if id <= 0 {
-		return ctx.JSON(http.StatusNotFound, utils.GetCommonResp(nil, errhandle.ERROR_CODE, "不存在"));
+		return ctx.JSON(http.StatusNotFound, utils.GetCommonResp(nil, errhandle.ERROR_CODE, "参数错误"));
 	}
 	resp, err := service.GetJokersById(id)
+	return ctx.JSON(http.StatusOK, utils.GetCommonResp(resp, errhandle.SUCCESS_CODE, "success"))
+}
+
+func GetClassJokersList(ctx echo.Context) (err error) {
+	pageInfo := request.NewReqPage()
+	if err = ctx.Bind(pageInfo); err != nil {
+		return err
+	}
+	classId, _ := strconv.Atoi(ctx.Param("classId"))
+	if classId <= 0 {
+		return ctx.JSON(http.StatusOK, utils.GetCommonResp(nil, errhandle.ERROR_CODE, "参数错误"))
+	}
+
+	resp, err := service.GetClassJokersList(pageInfo, classId)
+	errhandle.CheckError(err)
+
 	return ctx.JSON(http.StatusOK, utils.GetCommonResp(resp, errhandle.SUCCESS_CODE, "success"))
 }
