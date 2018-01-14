@@ -13,7 +13,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/labstack/gommon/log"
-	"github.com/funny/debug/sync"
+	"sync"
 )
 
 type dbconf struct {
