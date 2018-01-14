@@ -9,7 +9,7 @@ import (
 func main() {
 	app := boot.GetApp().AppInst
 	go func() {
-		app.Logger.Errorf("服务停止鸟: %v", app.Start(":1223"))
+		app.Logger.Errorf("服务停止鸟: %v", app.Start(":8088"))
 	}()
 
 	sigChan := make(chan os.Signal)
