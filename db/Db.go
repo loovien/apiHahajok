@@ -13,7 +13,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/labstack/gommon/log"
-	"sync"
+	"github.com/funny/debug/sync"
 )
 
 type dbconf struct {
@@ -36,7 +36,7 @@ var (
 )
 
 func NewDbMgr() *DbMgr {
-	if dbmgr != nil {
+	if dbmgr == nil {
 		dbOnce.Do(func() {
 			dbmgr = &DbMgr{
 				lock: &sync.RWMutex{},
