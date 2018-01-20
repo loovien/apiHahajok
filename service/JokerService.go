@@ -20,6 +20,7 @@ func GetLatestJokersList(pageInfo *request.ReqPage) (respJokerList response.Resp
 	jokerDao := dao.NewJoker()
 	commonCriteria := criteria.CommonCriteria{
 		Condition: "status = 1",
+		Order: "id DESC",
 	}
 	respJokerList.Cnt = jokerDao.Count(commonCriteria)
 	jokerList, err := jokerDao.GetJokerList(criteria.PageCriteria{
@@ -49,7 +50,7 @@ func GetHotsJokersList(pageInfo *request.ReqPage) (respJokerList response.RespJo
 	jokerDao := dao.NewJoker()
 	commonCriteria := criteria.CommonCriteria{
 		Condition: "status = 1",
-		Order: "replies DESC",
+		Order: "replies, id DESC",
 	}
 	respJokerList.Cnt = jokerDao.Count(commonCriteria)
 	jokerList, err := jokerDao.GetJokerList(criteria.PageCriteria{
